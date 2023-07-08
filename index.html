@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>P2P Folders I/O</title>
+	<link rel="stylesheet" type="text/css" href="css/simplex.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<link rel="icon" type="image/png" href="img/gift.png" />
+	<meta name="description" content="P2P folders I/O is designed to help people sharing their folders across distances in the simplest way possible.">
+	<meta name="keywords" content="files, folders, files transfert, folders transfert, p2p, peer to peer">
+	<meta name="author" content="Odin Duclos">
+</head>
+<body class="container-fluid">
+	<head class="row">
+		<nav class="navbar navbar-inverse">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-2">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand navigation" href="#" data-section="home">P2P Folders I/O</a>
+				</div>
+
+				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
+					<ul class="nav navbar-nav" id="menu">
+						<li><a href="#" class="openmodal" data-toggle="modal" data-target="#modal_connexion">Account <span class="sr-only">(current)</span></a></li>
+						<li><a href="#" class="openmodal" data-toggle="modal" data-target="#modal_friends">Contacts</a></li>
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Folders <span class="caret"></span></a>
+							<ul class="dropdown-menu" role="menu">
+								<li><a href="#myfolders" class="navigation" data-section="myfolders">My folders</a></li>
+								<li><a href="#users" class="navigation" data-section="users">Browse my contacts folders</a></li>
+							</ul>
+						</li>
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Downloads <span class="counter" id="downloads_counter">0</span> <span class="caret"></span></a>
+							<ul class="dropdown-menu" role="menu" id="downloads_menu">
+							</ul>
+						</li>
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+						<form class="navbar-form navbar-left" role="search" id="search">
+							<div class="form-group">
+								<input type="text" class="form-control" placeholder="Filter" id="filter">
+							</div>
+							<button type="submit" class="btn btn-default" disabled="disabled" id="filter_button">Filter</button>
+						</form>
+						<li><a href="#about" class="navigation" data-section="about">About</a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+	</head>
+	<article class="row">
+		<div id="comm" class="jumbotron col-lg-6 col-lg-offset-3 col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2"><p>Network</p></div>
+		<div class="warning alert alert-danger col-lg-6 col-lg-offset-3 col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2" role="alert" id="comm_errors">
+			<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+			<span class="sr-only">Error:</span>
+			<span class="info"></span>
+		</div>
+		<div class="warning alert alert-success col-lg-6 col-lg-offset-3 col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2" role="alert" id="comm_success">
+			<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+			<span class="sr-only">Error:</span>
+			<span class="info"></span>
+		</div>
+	</article>
+	<section id="home">
+		<article class="row">
+			<div id="dropzone" class="jumbotron col-lg-6 col-lg-offset-3 col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+				<form method="post" enctype="multipart/form-data"  action="upload.php">
+					<h1>Drop your folders here</h1>
+					<p>Use drag & drop to share your folders</p>
+					<input type="file" class="btn btn-default btn-lg" id="files" name="files" multiple>
+					<!-- <p><a href="#" onclick="save_folders()">Save my folders locally</a></p> -->
+				</form>
+			</div>
+		</article>
+		<article class="row">
+			<ul id="logs" class="col-lg-6 col-lg-offset-3 col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+			</ul>
+		</article>
+	</section>
+	<section id="myfolders">
+		<article class="row">
+			<div class="jumbotron col-lg-6 col-lg-offset-3 col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+				<p>My files & folders (<span id="count_files">0</span> files and <span id="count_folders">0</span> folders)</p>
+				<div class=" warning alert alert-danger" role="alert">
+					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+					<span class="sr-only">Error:</span>
+					No files or folders
+				</div>
+				<ul id="root-folder">
+				</ul>
+			</div>
+		</article>
+	</section>
+	<section id="users">
+		<article class="row">
+			<div class="jumbotron col-lg-6 col-lg-offset-3 col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+				<p>User list</p>
+				<div class=" warning alert alert-danger" role="alert">
+					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+					<span class="sr-only">Error:</span>
+					No contact connected
+				</div>
+				<ul id="users-list">
+				</ul>
+			</div>
+		</article>
+	</section>
+	<section id="userfolders">
+		<article class="row">
+			<div class="jumbotron col-lg-6 col-lg-offset-3 col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+				<p id="user-folders-username"></p>
+				<div class=" warning alert alert-danger" role="alert">
+					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+					<span class="sr-only">Error:</span>
+					No files or folders
+				</div>
+				<ul id="user-folders-list">
+				</ul>
+			</div>
+		</article>
+	</section>
+	<section id="about">
+		<article class="row">
+			<div class="container col-lg-6 col-lg-offset-3 col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+				<h1>About P2P Folders I/O</h1>
+				<h2>How to</h2>
+				<h3>Goal</h3>
+				<p>This tool is designed to help people sharing their folders across distances in the simplest way possible.</p>
+				<h3>Usage</h3>
+				<p>To start sharing your folders, go to <a href="/">the home page</a> and drag & drop your folders in the grey area. The drag & drop only works on the <span class="text-danger">last version of chrome</span>. Otherwise, you can click on the button choose your files.</p>
+				<p>In order to people to find you on this tool, you have to register as a user in the account tab. Once you chose your pseudonyme and secret, people can find you and downloads your folders if they add you to their contact list (contact tab) with your username composed as pseudonyme#secret.</p>
+				<p class="text-danger">All data are saved locally. Be carefull when clearing your browser cache.</p>
+				<p>To start donwload your contact folders and files, go on the Folders tab and choose browse my contact folders. Choose your contact to display his list of folders and files. To download a file or folder, just click on its name.</p>
+				<p>When the download is finished, the download icon is increased. Finally, you just have to go to the download tab and click on your lasts downloads to save them on your computer.</p>
+				<p>Enjoy!</p>
+				<h3>Technologies</h3>
+				<p>All the tool is designed to be P2P. No data will be saved on the server. The server is here to put clients in contacts, nothing more.</p>
+				<p>
+					<ul>
+						<li>Javascript & JQuery for the UI</li>
+						<li>Node & sockets for real time</li>
+						<li>PeerJS for transfert in WebRTC (P2P)</li>
+						<li>JSZip for packing folders</li>
+						<li>Bootstrap for the design</li>
+					</ul>
+				</p>
+
+				<h2>About me</h2>
+				<img src="img/profil.jpg" id="profil"/><p>I'm an Epitech web developer, and actually in charge of the We@cadémie Paris in Epitech. I love coding and teaching, and above all cats and unicorn!</p>
+			</div>
+		</article>
+	</section>
+	<footer>
+		<nav class="navbar navbar-default navbar-fixed-bottom row">
+			<div class="container col-lg-6 col-lg-offset-3 col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+				<p id="footer">Use this service carefully</p>
+			</div>
+		</nav>
+	</footer>
+	<!-- Modal -->
+	<div class="modal fade" id="modal_connexion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="myModalLabel">My account</h4>
+				</div>
+				<form id="save-account">
+					<div class="modal-body" id="form_account">
+						<p class="text-danger">All data are saved locally. Be carefull when clearing your browser cache.</p>
+
+						<div class="form-group">
+							<label for="pseudo_input">Pseudo</label>
+							<input type="text" class="form-control" name="pseudo" id="account_pseudo" placeholder="Pseudonyme">
+						</div>
+						<div class="form-group">
+							<label for="secret_input">Secret</label>
+							<input type="text" class="form-control" name="secret" id="account_secret" placeholder="Secret (min 8 char.)">
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-primary" id="save_account_button">Save changes</button>
+						<div class=" warning alert alert-success" role="alert" id="account_success">
+							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+							<span class="sr-only">Error:</span>
+							Your data were saved.
+						</div>
+						<div class=" warning alert alert-danger" role="alert" id="account_error_secret">
+							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+							<span class="sr-only">Error:</span>
+							Secret must contain at least 8 characters.
+						</div>
+						<div class=" warning alert alert-danger" role="alert" id="account_error_duplicate">
+							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+							<span class="sr-only">Error:</span>
+							Username already taken, your secret has been changed temporary.
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- Modal -->
+	<div class="modal fade" id="modal_friends" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="myModalLabel">My contacts</h4>
+				</div>
+				<div class="modal-body">
+					<p class="text-danger">All data are saved locally. Be carefull when clearing your browser cache.</p>
+					<div class="form-group" id="friends">
+						<table class="table table-hover" id="friends_table">
+							<thead>
+								<tr>
+									<th colspan="2">
+										<form id="save-contact">
+											<div class="form-group">
+												<label for="add_friend_username_input">Add a contact by username</label>
+												<input type="text" class="form-control" name="username" id="add_friend_username_input" placeholder="Pseudonym#secret">
+											</div>
+											<button type="submit" class="btn btn-primary">Add contact</button>
+										</form>
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<div class=" warning alert alert-success" role="alert" id="add_friend_success">
+						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+						<span class="sr-only">Error:</span>
+						Your data were saved.
+					</div>
+					<div class=" warning alert alert-danger" role="alert" id="add_friend_error_secret">
+						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+						<span class="sr-only">Error:</span>
+						Username must be composed of a pseudonyme, the character '#', and a secret of at least 8 char.
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/peer.min.js"></script>
+<script type="text/javascript" src="js/socket.io.js"></script>
+<script type="text/javascript" src="js/globals.js"></script>
+<script type="text/javascript" src="js/jszip.js"></script>
+<script type="text/javascript" src="js/utils.js"></script>
+<script type="text/javascript" src="js/zip.js"></script>
+<script type="text/javascript" src="js/ui.js"></script>
+<script type="text/javascript" src="js/reader.js"></script>
+<script type="text/javascript" src="js/p2p.js"></script>
+<script type="text/javascript" src="js/socket.js"></script>
+<script type="text/javascript" src="js/upload.js"></script>
+</html>

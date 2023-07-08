@@ -1,0 +1,15 @@
+var friends = [];
+var account = false;
+var icon_folder = '<span class="glyphicon glyphicon-folder-open" aria-hidden="true" onclick="expand_folder(this)"></span>';
+var icon_file = '<span class="glyphicon glyphicon-file" aria-hidden="true"></span>';
+var spacing = '<span class="spacing"></span>';
+var count_files = $("#count_files");
+var count_folders = $("#count_folders");
+var current_url = window.location.href.toString().split(window.location.host)[1].replace(/\//, '');
+var dropzone = $('#dropzone');
+var logs = $('#logs');
+var myfiles = $('#myfiles');
+var files = $("#files");
+var myfolders = $("#myfolders");
+var structure = [];
+var hydrate_structure = [];
